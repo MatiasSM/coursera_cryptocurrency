@@ -1,26 +1,31 @@
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /* CompliantNode refers to a node that follows the rules (not malicious)*/
+/** Current implementation is a naive one which seems to work well enough for the tests cases */
 public class CompliantNode implements Node {
 
+    private final Set<Transaction> seenTxs = new HashSet<>();
+
     public CompliantNode(double p_graph, double p_malicious, double p_txDistribution, int numRounds) {
-        // IMPLEMENT THIS
+        //Not used
     }
 
     public void setFollowees(boolean[] followees) {
-        // IMPLEMENT THIS
+        //Not used
     }
 
     public void setPendingTransaction(Set<Transaction> pendingTransactions) {
-        // IMPLEMENT THIS
+        seenTxs.addAll(pendingTransactions);
     }
 
     public Set<Transaction> sendToFollowers() {
-        // IMPLEMENT THIS
+        return Collections.unmodifiableSet(seenTxs);
     }
 
     public void receiveFromFollowees(Set<Candidate> candidates) {
-        // IMPLEMENT THIS
+        seenTxs.addAll(candidates.stream().map(c -> c.tx).collect(Collectors.toSet()));
     }
 }
