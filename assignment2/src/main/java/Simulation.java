@@ -23,7 +23,23 @@ public class Simulation {
       double p_malicious = Double.parseDouble(args[1]); // prob. that a node will be set to be malicious
       double p_txDistribution = Double.parseDouble(args[2]); // probability of assigning an initial transaction to each node 
       int numRounds = Integer.parseInt(args[3]); // number of simulation rounds your nodes will run for
+      Node[] nodes = simulateConsensus(numNodes, p_graph, p_malicious, p_txDistribution, numRounds);
 
+      // print results
+      for (int i = 0; i < numNodes; i++) {
+         Set<Transaction> transactions = nodes[i].sendToFollowers();
+         System.out.println("Transaction ids that Node " + i + " believes consensus on:");
+         for (Transaction tx : transactions)
+            System.out.println(tx.id);
+         System.out.println();
+         System.out.println();
+      }
+
+   }
+
+   public static Node[] simulateConsensus(
+       int numNodes, double p_graph, double p_malicious, double p_txDistribution, int numRounds)
+   {
       // pick which nodes are malicious and which are compliant
       Node[] nodes = new Node[numNodes];
       for (int i = 0; i < numNodes; i++) {
@@ -96,7 +112,7 @@ public class Simulation {
                 	  Set<Candidate> candidates = new HashSet<>();
                 	  allProposals.put(j, candidates);
                   }
-                  
+
                   Candidate candidate = new Candidate(tx, i);
                   allProposals.get(j).add(candidate);
                }
@@ -110,17 +126,7 @@ public class Simulation {
                nodes[i].receiveFromFollowees(allProposals.get(i));
          }
       }
-
-      // print results
-      for (int i = 0; i < numNodes; i++) {
-         Set<Transaction> transactions = nodes[i].sendToFollowers();
-         System.out.println("Transaction ids that Node " + i + " believes consensus on:");
-         for (Transaction tx : transactions)
-            System.out.println(tx.id);
-         System.out.println();
-         System.out.println();
-      }
-
+      return nodes;
    }
 
 
