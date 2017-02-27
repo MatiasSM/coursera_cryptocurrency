@@ -1,18 +1,21 @@
+import com.google.common.collect.ImmutableList;
+
 import java.util.*;
+import java.util.function.Supplier;
 
 public class MaliciousNode implements Node {
     private static final Random rnd = new Random(123);
-    private static final Strategy[] strategies = {
-        new DontPropagate(),
-        new SendOwn(),
-        new SendOwnAndNone()
-    };
+    private static final List<Supplier<Strategy>> strategies = ImmutableList.of(
+        DontPropagate::new,
+        SendOwn::new,
+        SendOwnAndNone::new
+    );
     private final Strategy strategy;
 
     public MaliciousNode(double p_graph, double p_malicious, double p_txDistribution, int numRounds) {
-        //strategy = strategies[rnd.nextInt(strategies.length)];
+        //strategy = strategies.get(rnd.nextInt(strategies.size())).get();
         //TODO this is hardcoded for the worst strategy for the current consensus logic
-        strategy = strategies[2];
+        strategy = strategies.get(2).get();
     }
 
     public void setFollowees(boolean[] followees) {
